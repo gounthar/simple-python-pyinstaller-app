@@ -22,13 +22,11 @@ pipeline {
         }
         stage('Deliver') {
             steps {
-                dir(path: env.BUILD_ID) {
-                    sh "pyinstaller -F add2vals.py"
-                }
+                sh "pyinstaller --onefile sources/add2vals.py"
             }
             post {
                 success {
-                    archiveArtifacts "${env.BUILD_ID}/sources/dist/add2vals"
+                    archiveArtifacts 'dist/add2vals'
                 }
             }
         }
