@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    options {
+        skipStagesAfterUnstable()
+    }
     stages {
         stage('Build') {
             steps {
@@ -14,6 +17,18 @@ pipeline {
             post {
                 always {
                     junit 'test-reports/results.xml'
+                }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                dir(path: env.BUILD_ID) {
+                    sh "pyinstaller -F add2vals.py"
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts "${env.BUILD_ID}/sources/dist/add2vals"
                 }
             }
         }
